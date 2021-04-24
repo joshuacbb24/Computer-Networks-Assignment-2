@@ -21,7 +21,11 @@ struct distance_table
 void rtinit3()
 {
     dt3.costs[3][0] = 7;
+
+//    not directly attached neighbor
     dt3.costs[3][1] = 9999;
+
+
     dt3.costs[3][2] = 2;
     dt3.costs[3][3] = 0;
 }
@@ -31,7 +35,13 @@ void rtupdate3(rcvdpkt)
 struct rtpkt *rcvdpkt;
 
 {
+    //    for each cost in mincosts
+    for(int i = 0; i < 4; i++)
+    {
 
+//        set cost from source node (1 if received from node 1) to node i = cost in mincosts[i]
+        dt3.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+    }
 }
 
 

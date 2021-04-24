@@ -296,10 +296,8 @@ return;
 /* make a copy of the packet student just gave me since he/she may decide */
 /* to do something with the packet after we return back to him/her */
 mypktptr = (struct rtpkt *) malloc(sizeof(struct rtpkt));
-mypktptr->
-sourceid = packet.sourceid;
-mypktptr->
-destid = packet.destid;
+mypktptr->sourceid = packet.sourceid;
+mypktptr->destid = packet.destid;
 for (
 i = 0;
 i<4; i++)

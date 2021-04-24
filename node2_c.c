@@ -33,6 +33,13 @@ struct rtpkt *rcvdpkt;
 
 {
 
+    //    for each cost in mincosts
+    for(int i = 0; i < 4; i++)
+    {
+
+//        set cost from source node (1 if received from node 1) to node i = cost in mincosts[i]
+        dt2.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+    }
 }
 
 
