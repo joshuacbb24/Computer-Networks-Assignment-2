@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 extern struct rtpkt {
-    int sourceid;       /* id of sending router sending this pkt */
-    int destid;         /* id of router to which pkt being sent
+    int sourceid ;       /* id of sending router sending this pkt */
+    int destid ;         /* id of router to which pkt being sent
                          (must be an immediate neighbor) */
-    int mincost[4];    /* min cost to node 0 ... 3 */
+    int mincost[4] ;    /* min cost to node 0 ... 3 */
 };
 
 extern int TRACE;
@@ -36,15 +36,15 @@ printdt0(dtptr)
 struct distance_table *dtptr;
 
 {
-printf("                via     \n");
-printf("   D0 |    1     2    3 \n");
-printf("  ----|-----------------\n");
-printf("     1|  %3d   %3d   %3d\n",dtptr->costs[1][1],
-dtptr->costs[1][2],dtptr->costs[1][3]);
-printf("dest 2|  %3d   %3d   %3d\n",dtptr->costs[2][1],
-dtptr->costs[2][2],dtptr->costs[2][3]);
-printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][1],
-dtptr->costs[3][2],dtptr->costs[3][3]);
+    printf("                via     \n");
+    printf("   D0 |    1     2    3 \n");
+    printf("  ----|-----------------\n");
+    printf("     1|  %3d   %3d   %3d\n",dtptr->costs[1][1],
+    dtptr->costs[1][2],dtptr->costs[1][3]);
+    printf("dest 2|  %3d   %3d   %3d\n",dtptr->costs[2][1],
+    dtptr->costs[2][2],dtptr->costs[2][3]);
+    printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][1],
+    dtptr->costs[3][2],dtptr->costs[3][3]);
 }
 
 linkhandler0(linkid, newcost)
