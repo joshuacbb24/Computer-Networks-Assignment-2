@@ -26,6 +26,15 @@ struct distance_table
 rtinit1()
 {
 
+    dt1.costs[1][0] = 1;
+    dt1.costs[1][1] = 0;
+
+    dt1.costs[1][2] = 1;
+
+
+//    not directly attached neighbor
+    dt1.costs[1][3] = 9999;
+
 }
 
 

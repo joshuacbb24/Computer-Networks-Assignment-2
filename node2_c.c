@@ -21,6 +21,10 @@ struct distance_table
 
 void rtinit2()
 {
+    dt2.costs[2][0] = 3;
+    dt2.costs[2][1] = 1;
+    dt2.costs[2][2] = 0;
+    dt2.costs[2][3] = 2;
 }
 
 

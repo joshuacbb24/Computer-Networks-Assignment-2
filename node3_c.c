@@ -20,6 +20,10 @@ struct distance_table
 
 void rtinit3()
 {
+    dt3.costs[3][0] = 7;
+    dt3.costs[3][1] = 9999;
+    dt3.costs[3][2] = 2;
+    dt3.costs[3][3] = 0;
 }
 
 

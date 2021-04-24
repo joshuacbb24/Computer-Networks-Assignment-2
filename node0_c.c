@@ -29,9 +29,11 @@ void rtinit0()
     dt0.costs[0][1] = 1;
 
 
-    dt0.costs[0][2] = 7;
+//    distance to node 2
+    dt0.costs[0][2] = 3;
 
-    dt0.costs[0][3] = 3;
+//    distance to node 3
+    dt0.costs[0][3] = 7;
 }
 
 
