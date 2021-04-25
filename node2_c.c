@@ -195,20 +195,33 @@ struct rtpkt *rcvdpkt;
 extern printdt2()
 {
 
-    printf("D2   \t0 \t1 \t2 \t3\n");
+    printf("\t\t\tCOST TO:\n");
+
+//    header
+    printf("\tD2   \t\t0 \t\t1 \t\t2 \t\t3\n");
+
     for(int row = 0; row < 4; row++)
     {
-        printf("%d |\t ", row);
+
+        if(row == 2)
+        {
+            printf("FROM: ");
+        }
+
+        printf("\t%d |\t ", row);
 
         for(int column = 0; column < 4; column++)
         {
-            printf("%d \t", dt2.costs[row][column]);
+
+
+
+//            print each value in table
+            printf("\t%d \t", dt2.costs[row][column]);
         }
 
         printf("\n");
     }
     printf("\n");
-
 }
 
 
