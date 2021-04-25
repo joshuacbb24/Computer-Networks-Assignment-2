@@ -85,7 +85,6 @@ void rtinit0()
 //            creatertpkt(updatePacket, 0, i, dt0.costs[0]);
 
 
-            printf("sending from %d and sending to %d\n", 0, i);
             updatePacket.sourceid = 0;
             updatePacket.destid = i;
 
@@ -228,7 +227,6 @@ struct rtpkt *rcvdpkt;
 
 
 
-    printdt0();
 
 
 }

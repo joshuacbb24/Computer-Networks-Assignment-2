@@ -134,7 +134,8 @@ main() {
     terminate:
 
 
-    //    add printing of dt's at end
+    //    I added printing of dt's at end, just so you can see the final values
+//    if  you want, you can add a call to one of these functions at any point in the code and it will show the current table
 
     printf("\n\n!!! FINAL TABLES !!!\n\n");
 

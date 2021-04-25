@@ -182,7 +182,6 @@ struct rtpkt *rcvdpkt;
     }
 
 
-    printdt2();
 
 
 }

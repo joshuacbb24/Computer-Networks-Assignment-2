@@ -5,6 +5,7 @@
 target="program2"
 
 
+#compile main executable
 all: node0_c.o node1_c.o node2_c.o node3_c.o prog3_c.o
 	gcc  -g *.o -o $(target)
 
