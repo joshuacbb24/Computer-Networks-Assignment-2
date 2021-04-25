@@ -34,7 +34,7 @@ int mincosts[];
     initrtpkt->sourceid = srcid;
     initrtpkt->destid = destid;
     for (i = 0; i<4; i++)
-    initrtpkt->mincost[i] = mincosts[i];
+        initrtpkt->mincost[i] = mincosts[i];
 }
 
 
@@ -128,6 +128,9 @@ main() {
 
     terminate:
     printf("\nSimulator terminated at t=%f, no packets in medium\n", clocktime);
+
+
+
 }
 
 
@@ -277,15 +280,15 @@ connectcosts[3][3]=0;
 
 /* be nice: check if source and destination id's are reasonable */
 if (packet.sourceid<0 || packet.sourceid>3) {
-printf("WARNING: illegal source id in your packet, ignoring packet!\n");
+printf("WARNING: illegal source id %d in your packet, ignoring packet!\n", packet.sourceid);
 return;
 }
 if (packet.destid<0 || packet.destid>3) {
-printf("WARNING: illegal dest id in your packet, ignoring packet!\n");
+printf("WARNING: illegal dest id %d in your packet, ignoring packet!\n", packet.destid);
 return;
 }
 if (packet.sourceid == packet.destid)  {
-printf("WARNING: source and destination id's the same, ignoring packet!\n");
+printf("WARNING: source and destination id %d are the same, ignoring packet!\n", packet.sourceid);
 return;
 }
 if (connectcosts[packet.sourceid][packet.destid] == 999)  {

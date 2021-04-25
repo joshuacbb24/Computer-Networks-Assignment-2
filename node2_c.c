@@ -112,7 +112,18 @@ struct rtpkt *rcvdpkt;
 
 //                create a rtpkt to send updated table to neighbors
 //                set sourceid to 2, destination to neighbor's id, and cost row to the new row that was received
-                creatertpkt(updatePacket, 2, i, dt2.costs[rcvdpkt->sourceid]);
+//                creatertpkt(updatePacket, 2, i, dt2.costs[rcvdpkt->sourceid]);
+
+                printf("sending from %d and sending to %d\n", 2, i);
+
+                updatePacket.sourceid = 2;
+                updatePacket.destid = i;
+
+//            copy costs into mincost array
+                for(int j = 0; j < 4; j++)
+                {
+                    updatePacket.mincost[j] = dt2.costs[0][j];
+                }
 
 
 
@@ -131,6 +142,8 @@ struct rtpkt *rcvdpkt;
 
     }
 
+
+    printdt2(dt2);
 
 
 }

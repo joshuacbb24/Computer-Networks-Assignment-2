@@ -67,6 +67,41 @@ void rtinit0()
 //    distance to node 3
     dt0.costs[0][3] = 7;
 
+//        create rtpkt to send updated entries
+    struct rtpkt updatePacket;
+
+
+    for(int i = 0; i < 4; i++)
+    {
+
+
+//        if node i is a direct neighbor
+        if(direct_neighbors0[i])
+        {
+
+//                create a rtpkt to send updated table to neighbors
+//                set sourceid to 0, destination to neighbor's id, and cost row to the new row that was received
+//            creatertpkt SEEMS TO CAUSE A  SEGMENTATION FAULT, SO I DECIDED TO MAKE THE PACKETS MANUALLY
+//            creatertpkt(updatePacket, 0, i, dt0.costs[0]);
+
+
+            printf("sending from %d and sending to %d\n", 0, i);
+            updatePacket.sourceid = 0;
+            updatePacket.destid = i;
+
+//            copy costs into mincost array
+            for(int j = 0; j < 4; j++)
+            {
+                updatePacket.mincost[j] = dt0.costs[0][j];
+            }
+
+
+
+//                send update packet to layer 2
+            tolayer2(updatePacket);
+        }
+    }
+
 
 }
 
@@ -78,40 +113,83 @@ struct rtpkt *rcvdpkt;
 //    stays 0 if no costs changed, otherwise will be 1
     int changed = 0;
 
+    const int cur_node = 0;
+
+
+    //    for each cost in mincosts
+    for(int i = 0; i < 4; i++)
+    {
+
+//        set cost from source node (E.G. 1 if received from node 1) to each destination from updated entries
+        dt0.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+    }
+
 
 //    for each of the values in rcvdpkt
     for(int i = 0; i < 4; i++)
     {
 
-//        if any of the new values do not equal the corresponding old value
-        if(dt0.costs[rcvdpkt->sourceid][i] != rcvdpkt->mincost[i])
+
+
+        //        re-calculate minimum costs in the node's row where it is the source
+        for(int dest = 0; dest < 4; dest++)
         {
 
-//            there was a change in values
-            changed = 1;
-            break;
+
+//                will store the minimum of various cost calculations
+                int new_cost = 9999999;
+
+
+
+//                for every node j
+                for(int j = 0; j  < 4; j++)
+                {
+
+//                    cost from current node to node j
+                    int cost = dt0.costs[cur_node][j];
+
+
+//                    add cost from node j to dest
+                    cost += dt0.costs[j][dest];
+
+
+//                    update if new minimum has been calculated
+                    if(cost < new_cost)
+                    {
+                        new_cost = cost;
+                    }
+
+
+                }
+
+
+
+//                if the new calculated cost doesn't equal the previous cost in the table
+                if(new_cost != dt0.costs[cur_node][dest])
+                {
+
+//                    update the value
+                    dt0.costs[cur_node][dest] = new_cost;
+
+//                    there was a change in minimum costs
+                    changed = 1;
+                }
         }
+
     }
 
 
-//    if there was a change
-    if(changed)
+
+//    if there was any change in the minimum costs
+    if(changed == 1)
     {
-        //    for each cost in mincosts
-        for(int i = 0; i < 4; i++)
-        {
-
-//        set cost from source node (E.G. 1 if received from node 1) to each destination from updated entries
-            dt0.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
-        }
-
 
 //        create rtpkt to send updated entries
         struct rtpkt updatePacket;
 
 
 
-//        for each node
+//        for each node i
         for(int i = 0;  i < 4; i++)
         {
 
@@ -122,8 +200,18 @@ struct rtpkt *rcvdpkt;
 
 //                create a rtpkt to send updated table to neighbors
 //                set sourceid to 0, destination to neighbor's id, and cost row to the new row that was received
-                creatertpkt(updatePacket, 0, i, dt0.costs[rcvdpkt->sourceid]);
+//                creatertpkt causes a segmentation fault, so doing it manually
 
+
+                updatePacket.sourceid = cur_node;
+                updatePacket.destid = i;
+
+
+//                copy each minimum cost into mincost array
+                for(int j = 0; j < 4; j++)
+                {
+                    updatePacket.mincost[j] = dt0.costs[cur_node][j];
+                }
 
 
 //                send update packet to layer 2
@@ -135,7 +223,6 @@ struct rtpkt *rcvdpkt;
 
         }
 
-//        send rtpkt
 
 
 
