@@ -81,62 +81,59 @@ struct rtpkt *rcvdpkt;
     {
 
         //        set cost from source node (E.G. 1 if received from node 1) to each destination from updated entries
-        dt0.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+        dt1.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
     }
 
 
-    //    for each of the values in rcvdpkt
-    for(int i = 0; i < 4; i++)
+
+
+
+    //        re-calculate minimum costs in the node's row where it is the source
+    for(int dest = 0; dest < 4; dest++)
     {
 
 
+        //                will store the minimum of various cost calculations
+        int new_cost = 9999999;
 
-        //        re-calculate minimum costs in the node's row where it is the source
-        for(int dest = 0; dest < 4; dest++)
+
+
+        //                for every node j
+        for(int j = 0; j  < 4; j++)
         {
 
-
-            //                will store the minimum of various cost calculations
-            int new_cost = 9999999;
-
+            //                    cost from current node to node j
+            int cost = dt1.costs[cur_node][j];
 
 
-            //                for every node j
-            for(int j = 0; j  < 4; j++)
+            //                    add cost from node j to dest
+            cost += dt1.costs[j][dest];
+
+
+            //                    update if new minimum has been calculated
+            if(cost < new_cost)
             {
-
-                //                    cost from current node to node j
-                int cost = dt0.costs[cur_node][j];
-
-
-                //                    add cost from node j to dest
-                cost += dt0.costs[j][dest];
-
-
-                //                    update if new minimum has been calculated
-                if(cost < new_cost)
-                {
-                    new_cost = cost;
-                }
-
-
+                new_cost = cost;
             }
 
 
-
-            //                if the new calculated cost doesn't equal the previous cost in the table
-            if(new_cost != dt0.costs[cur_node][dest])
-            {
-
-                //                    update the value
-                dt0.costs[cur_node][dest] = new_cost;
-
-                //                    there was a change in minimum costs
-                changed = 1;
-            }
         }
 
+
+
+        //                if the new calculated cost doesn't equal the previous cost in the table
+        if(new_cost != dt1.costs[cur_node][dest])
+        {
+
+            //                    update the value
+            dt1.costs[cur_node][dest] = new_cost;
+
+            //                    there was a change in minimum costs
+            changed = 1;
+        }
     }
+
+
 
 
 
@@ -172,7 +169,7 @@ struct rtpkt *rcvdpkt;
                 //                copy each minimum cost into mincost array
                 for(int j = 0; j < 4; j++)
                 {
-                    updatePacket.mincost[j] = dt0.costs[cur_node][j];
+                    updatePacket.mincost[j] = dt1.costs[cur_node][j];
                 }
 
 
@@ -191,21 +188,36 @@ struct rtpkt *rcvdpkt;
     }
 
 
+    printdt1();
+
+
 
 
 }
 
 
-printdt1(dtptr)
-struct distance_table *dtptr;
 
+
+
+
+// changed the print dt function to print the whole dt
+extern printdt1()
 {
-printf("             via   \n");
-printf("   D1 |    0     2 \n");
-printf("  ----|-----------\n");
-printf("     0|  %3d   %3d\n",dtptr->costs[0][0], dtptr->costs[0][2]);
-printf("dest 2|  %3d   %3d\n",dtptr->costs[2][0], dtptr->costs[2][2]);
-printf("     3|  %3d   %3d\n",dtptr->costs[3][0], dtptr->costs[3][2]);
+
+    printf("D1   \t0 \t1 \t2 \t3\n");
+    for(int row = 0; row < 4; row++)
+    {
+        printf("%d |\t ", row);
+
+        for(int column = 0; column < 4; column++)
+        {
+            printf("%d \t", dt1.costs[row][column]);
+        }
+
+        printf("\n");
+    }
+    printf("\n");
+
 
 }
 

@@ -125,58 +125,55 @@ struct rtpkt *rcvdpkt;
     }
 
 
-//    for each of the values in rcvdpkt
-    for(int i = 0; i < 4; i++)
+
+
+
+    //        re-calculate minimum costs in the node's row where it is the source
+    for(int dest = 0; dest < 4; dest++)
     {
 
 
-
-        //        re-calculate minimum costs in the node's row where it is the source
-        for(int dest = 0; dest < 4; dest++)
-        {
-
-
 //                will store the minimum of various cost calculations
-                int new_cost = 9999999;
+            int new_cost = 9999999;
 
 
 
 //                for every node j
-                for(int j = 0; j  < 4; j++)
-                {
+            for(int j = 0; j  < 4; j++)
+            {
 
 //                    cost from current node to node j
-                    int cost = dt0.costs[cur_node][j];
+                int cost = dt0.costs[cur_node][j];
 
 
 //                    add cost from node j to dest
-                    cost += dt0.costs[j][dest];
+                cost += dt0.costs[j][dest];
 
 
 //                    update if new minimum has been calculated
-                    if(cost < new_cost)
-                    {
-                        new_cost = cost;
-                    }
-
-
+                if(cost < new_cost)
+                {
+                    new_cost = cost;
                 }
+
+
+            }
 
 
 
 //                if the new calculated cost doesn't equal the previous cost in the table
-                if(new_cost != dt0.costs[cur_node][dest])
-                {
+            if(new_cost != dt0.costs[cur_node][dest])
+            {
 
 //                    update the value
-                    dt0.costs[cur_node][dest] = new_cost;
+                dt0.costs[cur_node][dest] = new_cost;
 
 //                    there was a change in minimum costs
-                    changed = 1;
-                }
-        }
-
+                changed = 1;
+            }
     }
+
+
 
 
 
@@ -231,20 +228,47 @@ struct rtpkt *rcvdpkt;
 
 
 
+    printdt0();
+
+
 }
 
 
-printdt0(dtptr)
-struct distance_table *dtptr;
 
+
+
+
+// changed the print dt function to print the whole dt
+// !!! THIS IS ONLY EXTERN SO THAT PRINTING OF DISTANCE TABLES CAN BE DONE IN PROG3_C TO SHOW FINAL RESULT !!!
+extern printdt0()
 {
-    printf("                via     \n");
-    printf("   D0 |    1     2    3 \n");
-    printf("  ----|-----------------\n");
-    printf("     1|  %3d   %3d   %3d\n",dtptr->costs[1][1],dtptr->costs[1][2],dtptr->costs[1][3]);
-    printf("dest 2|  %3d   %3d   %3d\n",dtptr->costs[2][1],dtptr->costs[2][2],dtptr->costs[2][3]);
-    printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][1],dtptr->costs[3][2],dtptr->costs[3][3]);
+
+//    header
+    printf("D0   \t0 \t1 \t2 \t3\n");
+
+    for(int row = 0; row < 4; row++)
+    {
+        printf("%d |\t ", row);
+
+        for(int column = 0; column < 4; column++)
+        {
+
+//            print each value in table
+            printf("%d \t", dt0.costs[row][column]);
+        }
+
+        printf("\n");
+    }
+
+    printf("\n");
+
+
 }
+
+
+
+
+
 
 linkhandler0(linkid, newcost)
 int linkid, newcost;

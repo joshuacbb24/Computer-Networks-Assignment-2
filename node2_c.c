@@ -65,43 +65,84 @@ struct rtpkt *rcvdpkt;
 
 {
 
+
 //    stays 0 if no costs changed, otherwise will be 1
     int changed = 0;
 
+    const int cur_node = 2;
 
-//    for each of the values in rcvdpkt
+
+    //    for each cost in mincosts
     for(int i = 0; i < 4; i++)
     {
 
-//        if any of the new values do not equal the corresponding old value
-        if(dt2.costs[rcvdpkt->sourceid][i] != rcvdpkt->mincost[i])
+//        set cost from source node to each destination equal to what's given in the entries in the received packet
+        dt2.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
+    }
+
+
+
+
+
+    //        re-calculate minimum costs in the node's row where it is the source
+    for(int dest = 0; dest < 4; dest++)
+    {
+
+
+//                will store the minimum of various cost calculations
+        int new_cost = 9999999;
+
+
+
+//                for every node j
+        for(int j = 0; j  < 4; j++)
         {
 
-//            there was a change in values
+//                    cost from current node to node j
+            int cost = dt2.costs[cur_node][j];
+
+
+//                    add cost from node j to dest
+            cost += dt2.costs[j][dest];
+
+
+//                    update if new minimum has been calculated
+            if(cost < new_cost)
+            {
+                new_cost = cost;
+            }
+
+
+        }
+
+
+
+//                if the new calculated cost doesn't equal the previous cost in the table
+        if(new_cost != dt2.costs[cur_node][dest])
+        {
+
+//                    update the value
+            dt2.costs[cur_node][dest] = new_cost;
+
+//                    there was a change in minimum costs
             changed = 1;
-            break;
         }
     }
 
 
-//    if there was a change
-    if(changed)
+
+
+
+//    if there was any change in the minimum costs
+    if(changed == 1)
     {
-        //    for each cost in mincosts
-        for(int i = 0; i < 4; i++)
-        {
-
-//        set cost from source node (E.G. 1 if received from node 1) to each destination from updated entries
-            dt2.costs[rcvdpkt->sourceid][i] = rcvdpkt->mincost[i];
-        }
-
 
 //        create rtpkt to send updated entries
         struct rtpkt updatePacket;
 
 
 
-//        for each node
+//        for each node i
         for(int i = 0;  i < 4; i++)
         {
 
@@ -111,20 +152,19 @@ struct rtpkt *rcvdpkt;
 
 
 //                create a rtpkt to send updated table to neighbors
-//                set sourceid to 2, destination to neighbor's id, and cost row to the new row that was received
-//                creatertpkt(updatePacket, 2, i, dt2.costs[rcvdpkt->sourceid]);
+//                set sourceid to 0, destination to neighbor's id, and cost row to the new row that was received
+//                creatertpkt causes a segmentation fault, so doing it manually
 
-                printf("sending from %d and sending to %d\n", 2, i);
 
-                updatePacket.sourceid = 2;
+                updatePacket.sourceid = cur_node;
                 updatePacket.destid = i;
 
-//            copy costs into mincost array
+
+//                copy each minimum cost into mincost array
                 for(int j = 0; j < 4; j++)
                 {
-                    updatePacket.mincost[j] = dt2.costs[0][j];
+                    updatePacket.mincost[j] = dt2.costs[cur_node][j];
                 }
-
 
 
 //                send update packet to layer 2
@@ -136,36 +176,41 @@ struct rtpkt *rcvdpkt;
 
         }
 
-//        send rtpkt
 
 
 
     }
 
 
-    printdt2(dt2);
+    printdt2();
 
 
 }
 
 
-printdt2(dtptr)
-struct distance_table *dtptr;
 
+
+
+
+// changed the print dt function to print the whole dt
+extern printdt2()
 {
-printf("                via     \n");
-printf("   D2 |    0     1    3 \n");
-printf("  ----|-----------------\n");
-printf("     0|  %3d   %3d   %3d\n",dtptr->costs[0][0],
-dtptr->costs[0][1],dtptr->costs[0][3]);
-printf("dest 1|  %3d   %3d   %3d\n",dtptr->costs[1][0],
-dtptr->costs[1][1],dtptr->costs[1][3]);
-printf("     3|  %3d   %3d   %3d\n",dtptr->costs[3][0],
-dtptr->costs[3][1],dtptr->costs[3][3]);
+
+    printf("D2   \t0 \t1 \t2 \t3\n");
+    for(int row = 0; row < 4; row++)
+    {
+        printf("%d |\t ", row);
+
+        for(int column = 0; column < 4; column++)
+        {
+            printf("%d \t", dt2.costs[row][column]);
+        }
+
+        printf("\n");
+    }
+    printf("\n");
+
 }
-
-
-
 
 
 

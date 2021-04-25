@@ -126,7 +126,27 @@ main() {
     }
 
 
+
+
+
+
+
     terminate:
+
+
+    //    add printing of dt's at end
+
+    printf("\n\n!!! FINAL TABLES !!!\n\n");
+
+    printdt0();
+
+    printdt1();
+
+    printdt2();
+
+    printdt3();
+
+
     printf("\nSimulator terminated at t=%f, no packets in medium\n", clocktime);
 
 
